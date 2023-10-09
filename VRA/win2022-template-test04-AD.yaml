@@ -1,0 +1,95 @@
+formatVersion: 1
+inputs:
+  diskplacement:
+    type: string
+    oneOf:
+      - title: medium IOS Disk (SAS)
+        const: size:silver01
+      - title: high IOS Disk (SSD)
+        const: size:gold01
+      - title: Independent HardDisk (SSD)
+        const: size:gold03
+  DiskSize:
+    type: number
+    minimum: 5
+    maximum: 500
+  DiskNumber:
+    type: number
+    description: Added Harddisks to VM
+    minimum: 0
+    maximum: 3
+  Username:
+    type: string
+    description: Username to login
+    pattern: '[a-z0-9A-Z]+'
+  Password:
+    type: string
+    description: Username to min four character
+    encrypted: true
+    pattern: '[a-z0-9A-Z]+'
+    minLength: 4
+    maxLength: 16
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      customizationSpec: Generate New Name and SID
+      image: win2022
+      flavor: medium
+      constraints:
+        - tag: env:prod
+      networks:
+        - network: ${resource.Cloud_Network_1.id}
+      attachedDisks: ${map_to_object(resource.Cloud_vSphere_Disk_1[*].id, "source")}
+      cloudConfig: |
+        #cloud-config
+         users:
+          -
+           name: ${input.Username}
+           gecos: '${input.Username}'
+           primary_group: Administrators
+           passwd: ${input.Password}
+         write_files:
+          content: | 
+           $driveletters = @("A","L","B")
+           $disks = Get-Disk | Where-Object PartitionStyle -Eq "RAW"
+           for ($i=0 ;$i -lt $disks.Count ; $i++){
+
+              initialize-disk $disks[$i].Number -PartitionStyle GPT
+
+              New-Partition -DiskNumber $disks[$i].Number -DriveLetter $driveletters[$i]  -UseMaximumSize
+
+              format-Volume -DriveLetter $driveletters[$i] -FileSystem NTFS -AllocationUnitSize 4096 -Force -Confirm:$false
+
+              Set-Volume -DriveLetter $driveletters[0] -NewFileSystemLabel "${resource.Cloud_vSphere_Disk_1[$i].name}"}
+          path: C:\test.ps1
+         runcmd: 
+          - 'PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& {Start-Process PowerShell -ArgumentList (Set-ExecutionPolicy Unrestricted -Force) -Verb RunAs}"'
+
+          - 'PowerShell C:\\test.ps1'
+         set_hostname: demoname
+  Cloud_vSphere_Disk_1:
+    type: Cloud.vSphere.Disk
+    metadata:
+      layoutPosition:
+        - 0
+        - 1
+    properties:
+      capacityGb: ${input.DiskSize}
+      constraints:
+        - tag: ${input.diskplacement}
+      count: ${input.DiskNumber}
+  Cloud_Network_1:
+    type: Cloud.Network
+    metadata:
+      layoutPosition:
+        - 1
+        - 0
+    properties:
+      constraints:
+        - tag: net:ext
+      networkType: existing
