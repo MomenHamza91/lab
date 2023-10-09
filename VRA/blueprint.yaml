@@ -1,4 +1,5 @@
-formatVersion: 1
+Version: 1
+Name: TestFromGithub
 inputs:
   diskplacement:
     type: string
