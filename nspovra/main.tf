@@ -1,4 +1,3 @@
-
 resource "vra_blueprint" "terraformbptest" {
   name        = var.blueprint_name
   description = "Created by vRA terraform provider"
