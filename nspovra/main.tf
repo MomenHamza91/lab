@@ -1,4 +1,4 @@
-data "vra_project" "this" {
+data "vra_project" "vra_project" {
   id = "${vra_project.Project-2.id}"
 }
 resource "vra_blueprint" "terraformbptest" {
