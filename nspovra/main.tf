@@ -1,4 +1,6 @@
-
+data "vra_project" "this" {
+  id = "${vra_project.my-project.id}"
+}
 resource "vra_blueprint" "terraformbptest" {
   name        = var.blueprint_name
   description = "Created by vRA terraform provider"
