@@ -1,5 +1,5 @@
 data "vra_project" "this" {
-  id = "${vra_project.my-project.id}"
+  id = "${vra_project.Project-2.id}"
 }
 resource "vra_blueprint" "terraformbptest" {
   name        = var.blueprint_name
