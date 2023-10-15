@@ -1,11 +1,11 @@
-data "vra_project" "vra_project" {
+data "vra_project" "this" {
   id = "${vra_project.Project-2.id}"
 }
 resource "vra_blueprint" "terraformbptest" {
   name        = var.blueprint_name
   description = "Created by vRA terraform provider"
 
-  project_id = vra_project.terraformbptest.id
+  project_id = vra_project.this.id
 
   content = <<-EOT
     formatVersion: 1
