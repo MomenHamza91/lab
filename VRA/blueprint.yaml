@@ -1,5 +1,5 @@
-Version: 1
-Name: TestFromGithub
+version: 1
+name: TestFromGithub
 inputs:
   diskplacement:
     type: string
