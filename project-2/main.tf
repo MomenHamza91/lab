@@ -32,7 +32,5 @@ resource "vra_blueprint" "terraformbptest" {
         properties:
           image: $${input.image}
           flavor: $${input.flavor}
-		  constraints:
-           - tag: 'env:prod'
   EOT
 }
