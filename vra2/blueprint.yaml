@@ -1,5 +1,5 @@
 version: 1
-name: iis and LB 
+name: "iis and LB" 
 inputs:
   diskplacement:
     type: string
