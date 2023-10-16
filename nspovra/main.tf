@@ -2,7 +2,7 @@ resource "vra_blueprint" "terraformbptest" {
   name        = var.blueprint_name
   description = "Created by vRA terraform provider"
 
-  project_id = "2F09148963-41f5-4ace-9803-418bb4255973"
+  project_id = "09148963-41f5-4ace-9803-418bb4255973"
   content = <<-EOT
     formatVersion: 1
     inputs:
